@@ -1,29 +1,62 @@
-# Welcome to your Expo app 👋
+# Grocery List App 🛒
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A simple **grocery/to-do list app** built with [Expo](https://expo.dev) and React Native. It lets you add grocery items to a running list and remove them once you've picked them up (or decided you don't need them anymore).
 
-## Get started
+This project was built to practice:
 
-1. Install dependencies
+- Managing component state with `useState`
+- Rendering dynamic lists with `FlatList`
+- Adding and removing items from a list based on user input
+- Structuring a clean, card-based mobile UI
+
+## What the app does
+
+- A text input at the top of the screen lets you type the name of a grocery item.
+- Tapping **Add Item** adds that text to the list and clears the input.
+- Every item in the list is rendered by a `FlatList` as its own card, with padding and rounded corners.
+- Each card has a **delete** button that removes that specific item from the list.
+- All list state lives in memory via `useState`, so the list resets when the app is fully reloaded.
+
+## Prerequisites
+
+Before you install this project, make sure you have the following installed on your computer:
+
+- [Node.js](https://nodejs.org/) (LTS version, 20 or newer recommended)
+- npm (comes bundled with Node.js)
+- The [Expo Go](https://expo.dev/go) app installed on your phone (available on the [App Store](https://apps.apple.com/app/expo-go/id982107779) for iOS and [Google Play](https://play.google.com/store/apps/details?id=host.exp.exponent) for Android)
+- Your phone and computer connected to the **same Wi-Fi network**
+
+## Installation
+
+1. Clone this repository:
+
+   ```bash
+   git clone https://github.com/<your-username>/Grocery-List.git
+   cd Grocery-List
+   ```
+
+2. Install dependencies:
 
    ```bash
    npm install
    ```
 
-2. Start the app
+## Running the app on your phone
+
+1. Start the development server:
 
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+2. A QR code will appear in your terminal (or in the browser tab that opens).
+3. Open the **Expo Go** app on your phone.
+4. Scan the QR code:
+   - **iOS**: use the Camera app to scan the QR code, then tap the notification that opens it in Expo Go.
+   - **Android**: open Expo Go and use the built-in "Scan QR code" option.
+5. The app will bundle and load on your phone inside Expo Go. You can now add and delete grocery items directly from your device.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+If your phone can't connect (e.g. on a restricted network), run `npx expo start --tunnel` instead, which routes the connection through Expo's tunnel service.
 
 ## Get a fresh project
 
