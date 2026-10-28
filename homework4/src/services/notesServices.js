@@ -30,13 +30,22 @@ export function subscribeToNotes(userId, callback, onError) {
 }
 
 export async function createNote(title, content, userId) {
-  console.log(title, content);
   await addDoc(notesCollection, {
     title,
     content,
     userId,
+    favorite: false,
     createdAt: serverTimestamp(),
   });
+}
+
+export async function setFavorite(noteId, favorite) {
+  const noteRef = doc(db, "notes", noteId);
+  try {
+    await updateDoc(noteRef, { favorite });
+  } catch (error) {
+    console.error("Error with setFavorite(): ", error);
+  }
 }
 
 export async function updateNote(noteId, updates) {

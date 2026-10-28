@@ -1,56 +1,80 @@
-# Welcome to your Expo app 👋
+# Personal Notes App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A mobile notes app built with **Expo / React Native**, **Firebase Authentication**, and **Cloud Firestore**. Users create an account, sign in, and manage a private list of personal notes that only they can see.
 
-## Get started
+## Features
 
-1. Install dependencies
+- **Authentication** (Firebase Auth)
+  - Create an account with email and password
+  - Log in to an existing account
+  - Log out
+  - Notes are only accessible while signed in; signing out returns to the login screen
+- **Notes** (Cloud Firestore)
+  - Each note has a `title`, `content`, `createdAt` timestamp, and `favorite` flag
+  - Notes are tagged with the owning user's `userId` and queried so each user only sees their own notes
+  - Create, edit (inline, tap a note's title/content to edit, saved on blur), and delete notes
+  - Mark/unmark a note as a favorite with the star button
+  - Filter the list between **All** and **Favorites**
+  - Total note count displayed at the top of the list
+- **UI**
+  - Notes rendered in a `FlatList`
+  - Dark, consistent color scheme defined in [`src/constants/theme.ts`](./src/constants/theme.ts)
+  - Star and delete buttons on each note row
+
+## Tech Stack
+
+- [Expo](https://expo.dev) (React Native, Expo Router for file-based routing)
+- [Firebase Authentication](https://firebase.google.com/docs/auth) — email/password sign-in
+- [Cloud Firestore](https://firebase.google.com/docs/firestore) — notes storage
+- `@expo/vector-icons` — icons
+
+## Project Structure
+
+```
+src/
+  app/            Expo Router entry (src/app/index.jsx chooses Login vs Home based on auth state)
+  pages/          LoginPage, HomePage
+  components/     Note, LoginInputField, Background
+  hooks/          useAuth (sign up / log in / log out)
+  services/       notesServices (Firestore reads/writes)
+  firebase/       firebase.config.js (Firebase app initialization)
+  constants/      theme.ts (color palette)
+```
+
+## Getting Started
+
+1. Install dependencies:
 
    ```bash
    npm install
    ```
 
-2. Start the app
+2. Configure Firebase — create a project in the [Firebase console](https://console.firebase.google.com/), enable **Email/Password** sign-in under Authentication, and create a **Cloud Firestore** database. Then fill in your project's config in [`src/firebase/firebase.config.js`](./src/firebase/firebase.config.js).
+
+3. Start the app:
 
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+   Open it in a [development build](https://docs.expo.dev/develop/development-builds/introduction/), an Android/iOS simulator, Expo Go, or the web.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Firestore Data Model
 
-You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+Each document in the `notes` collection looks like:
 
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```json
+{
+  "title": "string",
+  "content": "string",
+  "userId": "string (auth uid of the owner)",
+  "favorite": "boolean",
+  "createdAt": "Firestore server timestamp"
+}
 ```
 
-This command will move the starter code to the **example** directory and create a blank **src/app** directory where you can start developing.
+Notes are only fetched for the signed-in user's `userId` (see `subscribeToNotes` in [`notesServices.js`](./src/services/notesServices.js)). For full data isolation, Firestore **Security Rules** should also restrict reads/writes to documents where `request.auth.uid == resource.data.userId`.
 
-### Other setup steps
+## Security Note
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+`src/firebase/firebase.config.js` contains this project's Firebase web config for local development. Firebase web API keys are not secret by themselves (access is enforced by Firestore Security Rules and Firebase App Check), but when forking/submitting this project, replace them with your own Firebase project's credentials rather than reusing the ones checked in here.

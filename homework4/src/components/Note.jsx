@@ -1,9 +1,17 @@
 import colors from "@/constants/theme";
-import { deleteNote, updateNote } from "@/services/notesServices";
+import { deleteNote, setFavorite, updateNote } from "@/services/notesServices";
+import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 
-export default function Note({ title, content, onPress, isActive, id }) {
+export default function Note({
+  title,
+  content,
+  onPress,
+  isActive,
+  id,
+  favorite,
+}) {
   const [titleInput, setTitleInput] = useState(title);
   const [contentInput, setContentInput] = useState(content);
 
@@ -61,22 +69,46 @@ export default function Note({ title, content, onPress, isActive, id }) {
           multiline
         />
       </View>
-      <Pressable
+      <View
         style={{
           position: "absolute",
           right: 0,
-          backgroundColor: colors.onBackground,
-          paddingHorizontal: 4,
-          paddingVertical: 2,
-          borderRadius: 8,
-        }}
-        onPress={(e) => {
-          e.stopPropagation();
-          deleteNote(id);
+          top: 0,
+          flexDirection: "row",
+          gap: 4,
         }}
       >
-        <Text>Delete</Text>
-      </Pressable>
+        <Pressable
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onPress={(e) => {
+            e.stopPropagation();
+            setFavorite(id, !favorite);
+          }}
+        >
+          <Ionicons
+            name={favorite ? "star" : "star-outline"}
+            size={16}
+            color={favorite ? colors.accent : colors.background}
+          />
+        </Pressable>
+        <Pressable
+          style={{
+            backgroundColor: colors.onBackground,
+            paddingHorizontal: 4,
+            paddingVertical: 2,
+            borderRadius: 8,
+          }}
+          onPress={(e) => {
+            e.stopPropagation();
+            deleteNote(id);
+          }}
+        >
+          <Text>Delete</Text>
+        </Pressable>
+      </View>
     </Pressable>
   );
 }

@@ -11,6 +11,7 @@ export default function HomePage({ user }) {
 
   const [contentInput, setContentInput] = useState("");
   const [activeNoteId, setActiveNoteId] = useState(null);
+  const [filter, setFilter] = useState("all");
 
   const { handleLogout } = useAuth();
 
@@ -32,6 +33,9 @@ export default function HomePage({ user }) {
     return () => unsubscribe();
   }, [user?.uid]);
 
+  const visibleNotes =
+    filter === "favorites" ? notes.filter((note) => note.favorite) : notes;
+
   return (
     <View
       style={{
@@ -48,6 +52,34 @@ export default function HomePage({ user }) {
       </Text>
       <View
         style={{
+          flexDirection: "row",
+          gap: 8,
+          marginTop: 8,
+        }}
+      >
+        <Pressable onPress={() => setFilter("all")}>
+          <Text
+            style={{
+              color: filter === "all" ? colors.accent : colors.text,
+              fontWeight: filter === "all" ? "600" : "400",
+            }}
+          >
+            All
+          </Text>
+        </Pressable>
+        <Pressable onPress={() => setFilter("favorites")}>
+          <Text
+            style={{
+              color: filter === "favorites" ? colors.accent : colors.text,
+              fontWeight: filter === "favorites" ? "600" : "400",
+            }}
+          >
+            Favorites
+          </Text>
+        </Pressable>
+      </View>
+      <View
+        style={{
           marginLeft: "auto",
           flexDirection: "row",
           gap: 8,
@@ -61,12 +93,13 @@ export default function HomePage({ user }) {
         </Pressable>
       </View>
       <FlatList
-        data={notes}
+        data={visibleNotes}
         keyExtractor={(_, i) => i.toString()}
         renderItem={({ item }) => (
           <Note
             title={item.title}
             content={item.content}
+            favorite={item.favorite}
             isActive={item.id === activeNoteId}
             id={item.id}
             onPress={() => setActiveNoteId(item.id)}
