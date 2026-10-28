@@ -1,6 +1,6 @@
 import LoginInputField from "@/components/LoginInputField";
 import useAuth from "@/hooks/useAuth";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import Background from "../components/Background";
 import colors from "../constants/theme";
 
@@ -75,40 +75,28 @@ export default function LoginPage() {
             </Text>
           </Pressable>
           <Pressable
-            style={{
+            style={({ pressed }) => ({
               borderRadius: 15,
-              paddingHorizontal: 4,
-              paddingVertical: 8,
+              paddingHorizontal: 16,
+              paddingVertical: 10,
               alignItems: "center",
               justifyContent: "center",
               flex: 1,
-              borderBottomWidth: `1px`,
-              borderBottomColor: colors.text,
-              color: colors.text,
-            }}
+              backgroundColor: colors.accent,
+              opacity: pressed ? 0.8 : 1,
+            })}
             onPress={() =>
               authMode === "Login"
                 ? handleLogin(email, password)
                 : handleSignUp(email, password)
             }
           >
-            <Text style={{ color: colors.text }}>{authMode}</Text>
+            <Text style={{ color: colors.background, fontWeight: "600" }}>
+              {authMode}
+            </Text>
           </Pressable>
         </View>
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  button: {
-    borderRadius: 15,
-    paddingHorizontal: 4,
-    paddingVertical: 8,
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 1,
-    border: `1px solid ${colors.text}`,
-    color: colors.text,
-  },
-});
